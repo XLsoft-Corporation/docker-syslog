@@ -1,0 +1,27 @@
+services:
+
+        rsyslogd:
+                build: ./rsyslogd
+                image: rsyslog-img
+                container_name: rsyslogd
+                volumes:
+                        - ./rsyslogd/files/etc/rsyslog.conf:/etc/rsyslog.conf.d
+                # environment:
+                #         RSYSLOG_CONF: /rsyslogd/etc/rsyslog.conf
+                restart: always
+                ports:
+                        - 514:514
+                        - 514:514/udp
+                depends_on:
+                        - fluentd
+        fluentd:
+                build: ./fluentd
+                image: fluentd-img
+                container_name: fluentd
+                volumes:
+                        - ./fluentd/files/etc/:/fluentd/etc
+                        - fluentd-vol:/fluentd/log
+                restart: always
+
+volumes:
+        fluentd-vol:
